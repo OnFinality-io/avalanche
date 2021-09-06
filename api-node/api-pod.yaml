@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: api
+  name: api
+spec:
+  containers:
+    - args:
+        - api
+        - -c
+        - /opt/config.json
+      image: avaplatform/ortelius:v1.5.2
+      name: api
+      ports:
+        - containerPort: 8080
+      resources: {}
+      volumeMounts:
+        - mountPath: /tmp
+          name: avalanche-ipcs
+        - mountPath: /opt/config.json
+          name: api-claim1
+  restartPolicy: OnFailure
+  volumes:
+    - name: avalanche-ipcs
+      persistentVolumeClaim:
+        claimName: avalanche-ipcs
+    - name: api-claim1
+      persistentVolumeClaim:
+        claimName: api-claim1
+status: {}

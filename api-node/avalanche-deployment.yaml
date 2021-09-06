@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: avalanche
+  name: avalanche
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: avalanche
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: avalanche
+    spec:
+      containers:
+        - args:
+            - /bin/sh
+            - -cx
+            - 'exec /avalanchego/build/avalanchego --config-file=/opt/config.json --network-id=${NETWORKID} '
+          env:
+            - name: C_CHAINID
+              valueFrom:
+                configMapKeyRef:
+                  key: C_CHAINID
+                  name: production-env
+            - name: NETWORKID
+              valueFrom:
+                configMapKeyRef:
+                  key: NETWORKID
+                  name: production-env
+            - name: P_CHAINID
+              valueFrom:
+                configMapKeyRef:
+                  key: P_CHAINID
+                  name: production-env
+            - name: X_CHAINID
+              valueFrom:
+                configMapKeyRef:
+                  key: X_CHAINID
+                  name: production-env
+          image: avaplatform/avalanchego:v1.5.2
+          name: avalanche
+          ports:
+            - containerPort: 9650
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/avalanche
+              name: avalanche-claim0
+            - mountPath: /opt/config.json
+              name: avalanche-claim1
+            - mountPath: /tmp
+              name: avalanche-ipcs
+      restartPolicy: Always
+      volumes:
+        - name: avalanche-claim0
+          persistentVolumeClaim:
+            claimName: avalanche-claim0
+        - name: avalanche-claim1
+          persistentVolumeClaim:
+            claimName: avalanche-claim1
+        - name: avalanche-ipcs
+          persistentVolumeClaim:
+            claimName: avalanche-ipcs
+status: {}

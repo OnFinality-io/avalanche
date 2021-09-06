@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: migrate
+  name: migrate
+spec:
+  containers:
+    - args:
+        - -c
+        - |-
+          while ! migrate -path=/migrations/ -database "mysql://root:password@tcp(mysql:3306)/ortelius" up; do
+            sleep 1
+          done
+      command:
+        - /bin/sh
+      image: migrate/migrate:v4.14.1
+      name: migrate
+      resources: {}
+      volumeMounts:
+        - mountPath: /migrations
+          name: migrate-claim0
+  restartPolicy: OnFailure
+  volumes:
+    - name: migrate-claim0
+      persistentVolumeClaim:
+        claimName: migrate-claim0
+status: {}

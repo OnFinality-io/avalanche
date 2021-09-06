@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  C_CHAINID: 2q9e4r6Mu3U68nU1fYjgbR6JvwrRx36CohpAX5UQxse55x1Q5
+  NETWORKID: "1"
+  P_CHAINID: 11111111111111111111111111111111LpoYY
+  X_CHAINID: 2oYMBNV4eNHyqk2fjjV5nVQLDbtmNJzq5s3qs3Lo6ftnC6FByM
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: avalanche-production-env
+  name: production-env
