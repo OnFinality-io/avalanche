@@ -1,0 +1,9 @@
+createTime: "2021-09-06T14:03:24.138560306+12:00"
+name: avalanche-api
+services:
+  avalance-api:
+    addRevisionLabel: true
+    image: avaplatform/avalanchego
+    port: 80
+    type: webservice
+updateTime: "2021-09-06T14:03:24.138560467+12:00"
