@@ -1,0 +1,58 @@
+---
+
+
+- name: PersistentVolumeClaims
+  community.kubernetes.k8s:
+    definition:
+      kind: PersistentVolumeClaim
+      metadata:
+        labels:
+          io.kompose.service: "{{ item.key }}"
+        name: "{{ item.key }}"
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: "{{ item.value }}"
+  loop: "{{ claim | dict2items }}"
+  vars:
+    claim:
+      api-claim1:       100Mi
+      avalanche-claim0: 100Mi
+      avalanche-claim1: 100Mi
+      avalanche-ipcs:   100Mi
+      indexer-claim1:   100Mi
+      migrate-claim0:   100Mi
+      mysql-claim0:     100Mi
+      mysql-claim1:     100Mi
+
+
+
+- name: start api-node
+  community.kubernetes.k8s:
+    definition:
+      kind: Deployment
+      apiVersion: apps/v1
+      metadata:
+        name: '{{ ansible_operator_meta.name }}-deployment'
+        namespace: '{{ ansible_operator_meta.namespace }}'
+      spec:
+        replicas: "{{size}}"
+        selector:
+          matchLabels:
+            app: api-node
+        template:
+          metadata:
+            labels:
+              app: api-node
+          spec:
+            containers:
+            - name: avalanche-api-node
+              command:
+              - /avalanchego/build/avalanchego 
+              - '--config-file=/opt/config.json'
+              - '--network-id=${NETWORKID}'
+              image: "avaplatform/avalanchego:v1.5.2"
+              ports:
+                - containerPort: 9650

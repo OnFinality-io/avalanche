@@ -1,0 +1,7 @@
+apiVersion: api-node.onfinality.io/v1alpha1
+kind: AvalancheApi
+metadata:
+  name: avalancheapi-sample
+spec:
+  # Add fields here
+  size: 1

@@ -1,0 +1,20 @@
+# permissions for end users to view avalancheapis.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: avalancheapi-viewer-role
+rules:
+- apiGroups:
+  - api-node.onfinality.io
+  resources:
+  - avalancheapis
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - api-node.onfinality.io
+  resources:
+  - avalancheapis/status
+  verbs:
+  - get
